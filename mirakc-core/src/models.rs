@@ -21,7 +21,7 @@ use crate::epg::EpgService;
 use crate::epg::SeriesDescriptor;
 use crate::error::Error;
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq, Serialize, ToSchema)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq, ToSchema)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum ChannelType {
     GR,
@@ -43,6 +43,12 @@ impl<'de> Deserialize<'de> for ChannelType {
             "BS4K" => ChannelType::BS4K,
             _      => ChannelType::Other(s),
         })
+    }
+}
+
+impl Serialize for ChannelType {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_str(&self.to_string())
     }
 }
 impl fmt::Display for ChannelType {
