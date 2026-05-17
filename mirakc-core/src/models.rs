@@ -21,23 +21,39 @@ use crate::epg::EpgService;
 use crate::epg::SeriesDescriptor;
 use crate::error::Error;
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Deserialize, Serialize, ToSchema)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq, Serialize, ToSchema)]
+#[serde(rename_all = "UPPERCASE")]
 pub enum ChannelType {
     GR,
     BS,
     CS,
     SKY,
     BS4K,
+    Other(String),
 }
 
+impl<'de> Deserialize<'de> for ChannelType {
+    fn deserialize<D: serde::Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
+        let s = String::deserialize(d)?;
+        Ok(match s.as_str() {
+            "GR"   => ChannelType::GR,
+            "BS"   => ChannelType::BS,
+            "CS"   => ChannelType::CS,
+            "SKY"  => ChannelType::SKY,
+            "BS4K" => ChannelType::BS4K,
+            _      => ChannelType::Other(s),
+        })
+    }
+}
 impl fmt::Display for ChannelType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match *self {
+        match self {
             ChannelType::GR => write!(f, "GR"),
             ChannelType::BS => write!(f, "BS"),
             ChannelType::CS => write!(f, "CS"),
             ChannelType::SKY => write!(f, "SKY"),
             ChannelType::BS4K => write!(f, "BS4K"),
+            ChannelType::Other(val) => write!(f, "{}", val),
         }
     }
 }

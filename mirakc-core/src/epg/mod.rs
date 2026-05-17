@@ -394,7 +394,7 @@ where
             .channels
             .iter()
             .map(|config| MirakurunChannel {
-                channel_type: config.channel_type,
+                channel_type: config.channel_type.clone(),
                 channel: config.channel.clone(),
                 name: config.name.clone(),
                 services: self

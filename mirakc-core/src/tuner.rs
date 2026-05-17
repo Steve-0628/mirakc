@@ -153,7 +153,7 @@ impl TunerManager {
                     let user = TunerUserInfo::TimeshiftRecorder(name.to_string());
                     tuner.set_channel_user(
                         user,
-                        timeshift.uses.channel_type,
+                        timeshift.uses.channel_type.clone(),
                         timeshift.uses.channel.clone(),
                     );
                 }
@@ -607,9 +607,9 @@ impl Tuner {
     }
 
     fn is_available_for(&self, channel: &EpgChannel) -> bool {
-        match self.restriction {
-            Restriction::Channel(ch_type, ref ch) => {
-                ch_type == channel.channel_type && ch.as_str() == channel.channel
+        match &self.restriction {
+            Restriction::Channel(ch_type, ch) => {
+                *ch_type == channel.channel_type && ch.as_str() == channel.channel
             }
             Restriction::Exclusive => false,
             _ => self.is_available() && self.is_supported_type(channel),

@@ -50,7 +50,7 @@ where
                 .and_modify(|ch| ch.services.push(sv.sid()))
                 .or_insert(EpgChannel {
                     name: sv.channel.name.clone(),
-                    channel_type: sv.channel.channel_type,
+                    channel_type: sv.channel.channel_type.clone(),
                     channel: sv.channel.channel.clone(),
                     extra_args: sv.channel.extra_args.clone(),
                     services: vec![sv.sid()],
